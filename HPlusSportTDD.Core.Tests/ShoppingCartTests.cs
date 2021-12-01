@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
@@ -103,50 +102,5 @@ namespace HPlusSportTDD.Core.Tests
             Assert.NotNull(response);
             Assert.That(Array.Exists(response.Items, item => item.ArticleId == 42 && item.Quantity == 15));
         }
-    }
-
-    public class ShoppingCartManager
-    {
-        private List<AddToCartItem> _shoppingCart;
-
-        public ShoppingCartManager()
-        {
-            _shoppingCart = new List<AddToCartItem>();
-        }
-        
-        public AddToCartResponse AddToCart(AddToCartRequest request)
-        {
-            // Check item exists before adding
-            var existingItem = _shoppingCart.Find(item => item.ArticleId == request.Item.ArticleId);
-            if (existingItem != null)
-            {
-                existingItem.Quantity += request.Item.Quantity;
-            }
-            else
-            {
-                _shoppingCart.Add(request.Item);
-            }
-
-            return new AddToCartResponse()
-            {
-                Items = _shoppingCart.ToArray()
-            };
-        }
-    }
-
-    public class AddToCartResponse
-    {
-        public AddToCartItem[] Items { get; set; }
-    }
-
-    public class AddToCartRequest
-    {
-        public AddToCartItem Item { get; set; }
-    }
-
-    public class AddToCartItem
-    {
-        public int ArticleId { get; set; }
-        public int Quantity { get; set; }
     }
 }
