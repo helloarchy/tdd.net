@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -28,11 +29,11 @@ namespace HPlusSportTDD.Core.Tests
             var manager = new ShoppingCartManager();
 
             var response = manager.AddToCart(request);
-            
+
             Assert.NotNull(response);
             Assert.Contains(item, response.Items);
         }
-        
+
         [Test]
         public void ShouldReturnArticlesAddedToCart()
         {
@@ -41,16 +42,16 @@ namespace HPlusSportTDD.Core.Tests
                 ArticleId = 42,
                 Quantity = 3
             };
-            
+
             var request = new AddToCartRequest()
-                        {
-                            Item = item1
-                        };
-            
+            {
+                Item = item1
+            };
+
             var manager = new ShoppingCartManager();
 
             var response = manager.AddToCart(request);
-            
+
             var item2 = new AddToCartItem
             {
                 ArticleId = 43,
@@ -68,24 +69,24 @@ namespace HPlusSportTDD.Core.Tests
             Assert.Contains(item1, response.Items);
             Assert.Contains(item2, response.Items);
         }
-        
+
         [Test]
-        public void ShouldReturnCorrectQuantitiesWithManyAddedToCart()
+        public void ShouldReturnCombinedArticlesAddedToCart()
         {
             var item1 = new AddToCartItem
             {
                 ArticleId = 42,
-                Quantity = 3
+                Quantity = 5
             };
-            
+
             var request = new AddToCartRequest()
             {
                 Item = item1
             };
-            
+
             var manager = new ShoppingCartManager();
-            var response = manager.AddToCart(request);
-            
+            manager.AddToCart(request);
+
             var item2 = new AddToCartItem
             {
                 ArticleId = 42,
@@ -97,13 +98,10 @@ namespace HPlusSportTDD.Core.Tests
                 Item = item2
             };
 
-            response = manager.AddToCart(request2);
+            var response = manager.AddToCart(request2);
 
             Assert.NotNull(response);
-            Assert.Contains(item1, response.Items);
-            var item = response.Items.FirstOrDefault(item => item.ArticleId == item1.ArticleId);
-            var itemQuantity = item?.Quantity ?? 0;
-            Assert.That(itemQuantity == 13);
+            Assert.That(Array.Exists(response.Items, item => item.ArticleId == 42 && item.Quantity == 15));
         }
     }
 
@@ -115,12 +113,20 @@ namespace HPlusSportTDD.Core.Tests
         {
             _shoppingCart = new List<AddToCartItem>();
         }
-
         
         public AddToCartResponse AddToCart(AddToCartRequest request)
         {
-            _shoppingCart.Add(request.Item);
-            
+            // Check item exists before adding
+            var existingItem = _shoppingCart.Find(item => item.ArticleId == request.Item.ArticleId);
+            if (existingItem != null)
+            {
+                existingItem.Quantity += request.Item.Quantity;
+            }
+            else
+            {
+                _shoppingCart.Add(request.Item);
+            }
+
             return new AddToCartResponse()
             {
                 Items = _shoppingCart.ToArray()
