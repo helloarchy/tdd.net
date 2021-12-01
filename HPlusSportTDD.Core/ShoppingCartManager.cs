@@ -30,7 +30,7 @@ namespace HPlusSportTDD.Core.Tests
             };
         }
 
-        public AddToCartItem[] GetCart()
+        public IEnumerable<AddToCartItem> GetCart()
         {
             return _shoppingCart.ToArray();
         }
