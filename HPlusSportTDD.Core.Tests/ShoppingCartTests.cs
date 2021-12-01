@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace HPlusSportTDD.Core.Tests
@@ -60,7 +61,7 @@ namespace HPlusSportTDD.Core.Tests
                 Item = item2
             };
 
-            response = manager.AddToCart(request);
+            response = manager.AddToCart(request2);
 
             Assert.NotNull(response);
             Assert.Contains(item1, response.Items);
@@ -70,14 +71,21 @@ namespace HPlusSportTDD.Core.Tests
 
     public class ShoppingCartManager
     {
+        private List<AddToCartItem> _shoppingCart;
+
+        public ShoppingCartManager()
+        {
+            _shoppingCart = new List<AddToCartItem>();
+        }
+
+        
         public AddToCartResponse AddToCart(AddToCartRequest request)
         {
+            _shoppingCart.Add(request.Item);
+            
             return new AddToCartResponse()
             {
-                Items = new AddToCartItem[]
-                {
-                    request.Item
-                }
+                Items = _shoppingCart.ToArray()
             };
         }
     }
