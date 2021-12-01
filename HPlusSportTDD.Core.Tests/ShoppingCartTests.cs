@@ -30,13 +30,55 @@ namespace HPlusSportTDD.Core.Tests
             Assert.NotNull(response);
             Assert.Contains(item, response.Items);
         }
+        
+        [Test]
+        public void ShouldReturnArticlesAddedToCart()
+        {
+            var item1 = new AddToCartItem
+            {
+                ArticleId = 42,
+                Quantity = 3
+            };
+            
+            var request = new AddToCartRequest()
+                        {
+                            Item = item1
+                        };
+            
+            var manager = new ShoppingCartManager();
+
+            var response = manager.AddToCart(request);
+            
+            var item2 = new AddToCartItem
+            {
+                ArticleId = 43,
+                Quantity = 10
+            };
+
+            var request2 = new AddToCartRequest()
+            {
+                Item = item2
+            };
+
+            response = manager.AddToCart(request);
+
+            Assert.NotNull(response);
+            Assert.Contains(item1, response.Items);
+            Assert.Contains(item2, response.Items);
+        }
     }
 
     public class ShoppingCartManager
     {
         public AddToCartResponse AddToCart(AddToCartRequest request)
         {
-            throw new System.NotImplementedException();
+            return new AddToCartResponse()
+            {
+                Items = new AddToCartItem[]
+                {
+                    request.Item
+                }
+            };
         }
     }
 
