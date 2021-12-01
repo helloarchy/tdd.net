@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 
 namespace HPlusSportTDD.Core.Tests
@@ -66,6 +67,43 @@ namespace HPlusSportTDD.Core.Tests
             Assert.NotNull(response);
             Assert.Contains(item1, response.Items);
             Assert.Contains(item2, response.Items);
+        }
+        
+        [Test]
+        public void ShouldReturnCorrectQuantitiesWithManyAddedToCart()
+        {
+            var item1 = new AddToCartItem
+            {
+                ArticleId = 42,
+                Quantity = 3
+            };
+            
+            var request = new AddToCartRequest()
+            {
+                Item = item1
+            };
+            
+            var manager = new ShoppingCartManager();
+            var response = manager.AddToCart(request);
+            
+            var item2 = new AddToCartItem
+            {
+                ArticleId = 42,
+                Quantity = 10
+            };
+
+            var request2 = new AddToCartRequest()
+            {
+                Item = item2
+            };
+
+            response = manager.AddToCart(request2);
+
+            Assert.NotNull(response);
+            Assert.Contains(item1, response.Items);
+            var item = response.Items.FirstOrDefault(item => item.ArticleId == item1.ArticleId);
+            var itemQuantity = item?.Quantity ?? 0;
+            Assert.That(itemQuantity == 13);
         }
     }
 
