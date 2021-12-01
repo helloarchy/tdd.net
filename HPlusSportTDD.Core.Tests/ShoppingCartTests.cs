@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Moq;
 using NUnit.Framework;
 
 namespace HPlusSportTDD.Core.Tests
@@ -25,9 +26,21 @@ namespace HPlusSportTDD.Core.Tests
                 Item = item
             };
 
-            var manager = new ShoppingCartManager();
+            var mockManager = new Mock<IShoppingCartManager>();
+            mockManager.Setup(manager => manager.AddToCart(
+                    It.IsAny<AddToCartRequest>()
+                )
+            ).Returns(
+                (AddToCartRequest request) => new AddToCartResponse()
+                {
+                    Items = new AddToCartItem[]
+                    {
+                        request.Item
+                    }
+                }
+            );
 
-            var response = manager.AddToCart(request);
+            var response = mockManager.Object.AddToCart(request);
 
             Assert.NotNull(response);
             Assert.Contains(item, response.Items);
