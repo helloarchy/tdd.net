@@ -1,4 +1,4 @@
-﻿namespace HPlusSportTDD.Core.Tests
+﻿namespace HPlusSportTDD.Core
 {
     public class AddToCartResponse
     {

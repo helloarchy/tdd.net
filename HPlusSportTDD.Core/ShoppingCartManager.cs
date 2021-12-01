@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HPlusSportTDD.Core.Tests
+namespace HPlusSportTDD.Core
 {
     public class ShoppingCartManager : IShoppingCartManager
     {
@@ -13,7 +13,6 @@ namespace HPlusSportTDD.Core.Tests
         
         public AddToCartResponse AddToCart(AddToCartRequest request)
         {
-            // Check item exists before adding
             var existingItem = _shoppingCart.Find(item => item.ArticleId == request.Item.ArticleId);
             if (existingItem != null)
             {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HPlusSportTDD.Core.Tests
+namespace HPlusSportTDD.Core
 {
     public interface IShoppingCartManager
     {
